@@ -1,0 +1,9 @@
+{
+  "name": "homebridge-soundtouch",
+  "version": "1.0.0",
+  "description": "Homebridge SoundTouch",
+  "author": "CONNCTED",
+  "dependencies": {
+    "soundtouch": "git+https://github.com/CONNCTED/SoundTouch-NodeJS.git"
+  }
+}
