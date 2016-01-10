@@ -107,7 +107,7 @@ SoundTouchAccessory.prototype._getOn = function(callback) {
     }.bind(this));*/
 };
 
-SonosAccessory.prototype._setOn = function(on, callback) {
+SoundTouchAccessory.prototype._setOn = function(on, callback) {
     /*if (!this.device) {
         this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
         callback(new Error("Sonos has not been discovered yet."));
