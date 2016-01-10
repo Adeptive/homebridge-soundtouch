@@ -76,10 +76,10 @@ SoundTouchAccessory.prototype.search = function() {
 SoundTouchAccessory.prototype.getInformationService = function() {
     var informationService = new Service.AccessoryInformation();
     informationService
-        .setCharacteristic(Characteristic.Name, accessory.name)
+        .setCharacteristic(Characteristic.Name, this.name)
         .setCharacteristic(Characteristic.Manufacturer, 'Bose SoundTouch')
         .setCharacteristic(Characteristic.Model, '1.0.0')
-        .setCharacteristic(Characteristic.SerialNumber, '<unknown>');
+        .setCharacteristic(Characteristic.SerialNumber, this.room);
     return informationService;
 };
 
