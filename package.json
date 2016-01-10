@@ -5,5 +5,20 @@
   "author": "CONNCTED",
   "dependencies": {
     "soundtouch": "git+https://github.com/CONNCTED/SoundTouch-NodeJS.git"
+  },
+  "license": "ISC",
+  "keywords": [
+    "homebridge-plugin"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/CONNCTED/homebridge-soundtouch.git"
+  },
+  "bugs": {
+    "url": "http://github.com/CONNCTED/homebridge-soundtouch/issues"
+  },
+  "engines": {
+    "node": ">=0.12.0",
+    "homebridge": ">=0.2.0"
   }
 }
