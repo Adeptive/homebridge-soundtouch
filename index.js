@@ -47,10 +47,18 @@ SoundTouchAccessory.zoneTypeIsPlayable = function(zoneType) {
 
 SoundTouchAccessory.prototype.search = function() {
 
+    var accessory = this;
     this.soundtouch = new SoundTouchDiscovery();
 
     this.soundtouch.search(function(device) {
-        console.log(device);
+        //if(accessory.room == device.name) {
+            accessory.device = device;
+            console.log('Found matching room :' + accessory.room);
+
+            accessory.device.getNowPlaying(function(json) {
+                console.log(json);
+            });
+        //}
     });
 
     /*var search = sonos.search(function(device) {
