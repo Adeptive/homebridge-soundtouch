@@ -1,5 +1,7 @@
 #Homebridge-soundtouch
 
+[Bose SoundTouch](https://www.bose.com/soundtouch-systems.html) plugin for [Homebridge](https://github.com/nfarina/homebridge)
+
 Example config.json:
 
 ```
@@ -12,5 +14,8 @@ Example config.json:
 	],
 ```
 
-The 'accessory' should be set to 'SoundTouch' and the name is the name you want to use to control the SoundTouch.
-The 'room' should match exactly with the name of the SoundTouch device.
+Fields: 
+
+* "accessory": Must always be "SoundTouch" (required)
+* "name": The name you want to use to control the SoundTouch.
+* "room": Should match exactly with the name of the SoundTouch device.
