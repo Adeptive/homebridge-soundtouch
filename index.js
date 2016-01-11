@@ -86,8 +86,11 @@ SoundTouchAccessory.prototype._getOn = function(callback) {
         return;
     }
 
+    var accessory = this;
+
     this.device.getNowPlaying(function(json) {
         var isOn = json.nowPlaying.source != SoundTouch_SOURCES.STANDBY;
+        accessory.log('Check if is playing: %s (%s)', isOn, json.nowPlaying.source);
         callback(null, isOn);
     });
 };
@@ -103,12 +106,12 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
 
     if (on) {
         this.device.play(function() {
-            accessory.log('Playing %s', accessory.room);
+            accessory.log('Playing');
             callback(null);
         });
     } else {
         this.device.stop(function() {
-            accessory.log('Stopping %s', accessory.room);
+            accessory.log('Stopping');
             callback(null);
         });
     }
@@ -140,7 +143,7 @@ SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
     var accessory = this;
 
     this.device.setVolume(volume, function() {
-        accessory.log('Setting volume to %s for %s', volume, accessory.room);
+        accessory.log('Setting volume to %s', volume);
         callback(null);
     });
 };
