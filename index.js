@@ -2,6 +2,8 @@ var SoundTouchDiscovery = require('soundtouch');
 var inherits = require('util').inherits;
 var Service, Characteristic, VolumeCharacteristic;
 
+var SoundTouch_SOURCES = require('soundtouch/utils/types').Source;
+
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
@@ -85,8 +87,8 @@ SoundTouchAccessory.prototype._getOn = function(callback) {
     }
 
     this.device.getNowPlaying(function(json) {
-       console.log(json);
-        callback(null, true);
+        var isOn = json.nowPlaying.source != SoundTouch_SOURCES.STANDBY;
+        callback(null, isOn);
     });
 };
 
@@ -96,36 +98,20 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
         callback(new Error("SoundTOuch has not been discovered yet."));
         return;
     }
-    /*if (!this.device) {
-        this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
-        callback(new Error("Sonos has not been discovered yet."));
-        return;
-    }
 
-    this.log("Setting power to " + on);
+    var accessory = this;
 
     if (on) {
-        this.device.play(function(err, success) {
-            this.log("Playback attempt with success: " + success);
-            if (err) {
-                callback(err);
-            }
-            else {
-                callback(null);
-            }
-        }.bind(this));
+        this.device.play(function() {
+            accessory.log('Playing %s', accessory.room);
+            callback(null);
+        });
+    } else {
+        this.device.stop(function() {
+            accessory.log('Stopping %s', accessory.room);
+            callback(null);
+        });
     }
-    else {
-        this.device.stop(function(err, success) {
-            this.log("Stop attempt with success: " + success);
-            if (err) {
-                callback(err);
-            }
-            else {
-                callback(null);
-            }
-        }.bind(this));
-    }*/
 };
 
 SoundTouchAccessory.prototype._getVolume = function(callback) {
@@ -135,29 +121,13 @@ SoundTouchAccessory.prototype._getVolume = function(callback) {
         return;
     }
 
+    var accessory = this;
+
     this.device.getVolume(function(json) {
-        console.log(json);
-        this.log("Current volume: %s", 10);
-        callback(null, 10);
+        var volume = json.volume.actualvolume;
+        accessory.log("Current volume: %s", volume);
+        callback(null, volume * 1);
     });
-
-    /*if (!this.device) {
-        this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
-        callback(new Error("Sonos has not been discovered yet."));
-        return;
-    }
-
-    this.device.getVolume(function(err, volume) {
-
-        if (err) {
-            callback(err);
-        }
-        else {
-            this.log("Current volume: %s", volume);
-            callback(null, Number(volume));
-        }
-
-    }.bind(this));*/
 };
 
 SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
@@ -166,25 +136,14 @@ SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
         callback(new Error("SoundTOuch has not been discovered yet."));
         return;
     }
-    /*if (!this.device) {
-        this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
-        callback(new Error("Sonos has not been discovered yet."));
-        return;
-    }
 
-    this.log("Setting volume to %s", volume);
+    var accessory = this;
 
-    this.device.setVolume(volume + "", function(err, data) {
-        this.log("Set volume response with data: " + data);
-        if (err) {
-            callback(err);
-        }
-        else {
-            callback(null);
-        }
-    }.bind(this));*/
+    this.device.setVolume(volume, function() {
+        accessory.log('Setting volume to %s for %s', volume, accessory.room);
+        callback(null);
+    });
 };
-
 
 //
 // Custom Characteristic for Volume
