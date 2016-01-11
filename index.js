@@ -36,61 +36,31 @@ function SoundTouchAccessory(log, config) {
         .on('get', this._getVolume.bind(this))
         .on('set', this._setVolume.bind(this));
 
-    // begin searching for a Sonos device with the given name
+    // begin searching for a SoundTouch device with the given name
     this.search();
 }
 
-SoundTouchAccessory.zoneTypeIsPlayable = function(zoneType) {
-    // 8 is the Sonos SUB, 4 is the Sonos Bridge, 11 is unknown
-    return zoneType != '11' && zoneType != '8' && zoneType != '4';
-};
-
 SoundTouchAccessory.prototype.search = function() {
-
     var accessory = this;
+    var soundtouch = new SoundTouchDiscovery();
+    accessory.soundtouch = soundtouch;
 
-    this.soundtouch = new SoundTouchDiscovery();
+    accessory.soundtouch.search(function(device) {
 
-    this.soundtouch.search(function(device) {
-
-        accessory.log.debug("Found Bose SoundTouch device: %s", device.name);
+        accessory.log("Found Bose SoundTouch device: %s", device.name);
 
         if (accessory.room != device.name) {
-            accessory.log.debug("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
+            accessory.log("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
             return;
         }
 
         accessory.device = device;
 
         //we found the device, so stop looking
-        this.soundtouch.stopSearching();
+        soundtouch.stopSearching();
+    }, function(device) {
+        accessory.log("Bose SoundTouch device went offline: %s", device.name);
     });
-
-    /*var search = sonos.search(function(device) {
-        var host = device.host;
-        this.log.debug("Found sonos device at %s", host);
-
-        device.deviceDescription(function (err, description) {
-
-            var zoneType = description["zoneType"];
-            var roomName = description["roomName"];
-
-            if (!SonosAccessory.zoneTypeIsPlayable(zoneType)) {
-                this.log.debug("Sonos device %s is not playable (has an unknown zone type of %s); ignoring", host, zoneType);
-                return;
-            }
-
-            if (roomName != this.room) {
-                this.log.debug("Ignoring device %s because the room name '%s' does not match the desired name '%s'.", host, roomName, this.room);
-                return;
-            }
-
-            this.log("Found a playable device at %s for room '%s'", host, roomName);
-            this.device = device;
-            search.socket.close(); // we don't need to continue searching.
-
-        }.bind(this));
-    }.bind(this));*/
 };
 
 SoundTouchAccessory.prototype.getInformationService = function() {
@@ -108,26 +78,24 @@ SoundTouchAccessory.prototype.getServices = function() {
 };
 
 SoundTouchAccessory.prototype._getOn = function(callback) {
-    /*if (!this.device) {
-        this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
-        callback(new Error("Sonos has not been discovered yet."));
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
         return;
     }
 
-    this.device.getCurrentState(function(err, state) {
-
-        if (err) {
-            callback(err);
-        }
-        else {
-            var on = (state == "playing");
-            callback(null, on);
-        }
-
-    }.bind(this));*/
+    this.device.getNowPlaying(function(json) {
+       console.log(json);
+        callback(null, true);
+    });
 };
 
 SoundTouchAccessory.prototype._setOn = function(on, callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
+        return;
+    }
     /*if (!this.device) {
         this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
         callback(new Error("Sonos has not been discovered yet."));
@@ -161,6 +129,18 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
 };
 
 SoundTouchAccessory.prototype._getVolume = function(callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
+        return;
+    }
+
+    this.device.getVolume(function(json) {
+        console.log(json);
+        this.log("Current volume: %s", 10);
+        callback(null, 10);
+    });
+
     /*if (!this.device) {
         this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
         callback(new Error("Sonos has not been discovered yet."));
@@ -181,6 +161,11 @@ SoundTouchAccessory.prototype._getVolume = function(callback) {
 };
 
 SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
+        return;
+    }
     /*if (!this.device) {
         this.log.warn("Ignoring request; Sonos device has not yet been discovered.");
         callback(new Error("Sonos has not been discovered yet."));
