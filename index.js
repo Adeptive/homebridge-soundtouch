@@ -1,4 +1,4 @@
-var soundtouch = require('soundtouch');
+var SoundTouchDiscovery = require('soundtouch');
 var inherits = require('util').inherits;
 var Service, Characteristic, VolumeCharacteristic;
 
@@ -46,6 +46,13 @@ SoundTouchAccessory.zoneTypeIsPlayable = function(zoneType) {
 };
 
 SoundTouchAccessory.prototype.search = function() {
+
+    this.soundtouch = new SoundTouchDiscovery();
+
+    this.soundtouch.search(function(device) {
+        console.log(device);
+    });
+
     /*var search = sonos.search(function(device) {
         var host = device.host;
         this.log.debug("Found sonos device at %s", host);
