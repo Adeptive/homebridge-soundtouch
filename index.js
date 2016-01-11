@@ -48,17 +48,22 @@ SoundTouchAccessory.zoneTypeIsPlayable = function(zoneType) {
 SoundTouchAccessory.prototype.search = function() {
 
     var accessory = this;
+
     this.soundtouch = new SoundTouchDiscovery();
 
     this.soundtouch.search(function(device) {
-        //if(accessory.room == device.name) {
-            accessory.device = device;
-            console.log('Found matching room :' + accessory.room);
 
-            accessory.device.getNowPlaying(function(json) {
-                console.log(json);
-            });
-        //}
+        accessory.log.debug("Found Bose SoundTouch device: %s", device.name);
+
+        if (accessory.room != device.name) {
+            accessory.log.debug("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
+            return;
+        }
+
+        accessory.device = device;
+
+        //we found the device, so stop looking
+        this.soundtouch.stopSearching();
     });
 
     /*var search = sonos.search(function(device) {
