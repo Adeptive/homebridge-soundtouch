@@ -6,7 +6,7 @@
 		"pin": "031-45-154"
 	},
 
-	"description": "This is an example configuration for the Loxone homebridge plugin",
+	"description": "This is an example configuration for the SoundTouch homebridge plugin",
 
 	"accessories": [
 		{
