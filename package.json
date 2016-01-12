@@ -1,6 +1,6 @@
 {
   "name": "homebridge-soundtouch",
-  "version": "2.0.8",
+  "version": "2.0.9Im",
   "description": "Homebridge SoundTouch",
   "author": "CONNCTED",
   "dependencies": {
@@ -8,7 +8,7 @@
   },
   "license": "ISC",
   "keywords": [
-    "homebridge-plugin"
+    "homebridge-plugin", "soundtouch", "homekit", "siri", "bose"
   ],
   "repository": {
     "type": "git",
