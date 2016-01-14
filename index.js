@@ -102,7 +102,7 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
 
     if (on) {
         this.device.powerOn(function(isTurnedOn) {
-            accessory.log(isTurnedOn ? 'Was already powered on' : 'Power On');
+            accessory.log(isTurnedOn ? 'Power On' : 'Was already powered on');
             accessory.device.play(function(json) {
                 accessory.log('Playing...');
                 callback(null);
