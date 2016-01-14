@@ -42,15 +42,15 @@ In fact, for HomeKit this accessory is treated like a switch (because music acce
 
 ##Siri (English)
 
-* Hey Siri, is speaker bathroom enabled?
-* Hey Siri, is speaker bathroom playing?
-* Hey Siri, turn speaker bathroom on
-* Hey Siri, turn speaker bathroom off
+* Hé Siri, is speaker bathroom enabled?
+* Hé Siri, is speaker bathroom playing?
+* Hé Siri, turn speaker bathroom on
+* Hé Siri, turn speaker bathroom off
 
 
 ##Siri (Dutch)
 
-* Hey Siri, is de speaker badkamer ingeschakeld?
-* Hey Siri, is speaker badkamer aan het spelen?
-* Hey Siri, schakel speaker badkamer in
-* Hey Siri, schakel speaker badkamer uit
+* Hé Siri, is de speaker badkamer ingeschakeld?
+* Hé Siri, is speaker badkamer aan het spelen?
+* Hé Siri, schakel speaker badkamer in
+* Hé Siri, schakel speaker badkamer uit
