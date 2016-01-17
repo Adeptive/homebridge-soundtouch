@@ -1,10 +1,10 @@
 {
   "name": "homebridge-soundtouch",
-  "version": "2.2.4",
+  "version": "3.0.0",
   "description": "Homebridge SoundTouch",
   "author": "CONNCTED",
   "dependencies": {
-    "soundtouch": "2.2.3"
+    "soundtouch": "3.0.2"
   },
   "license": "ISC",
   "keywords": [
