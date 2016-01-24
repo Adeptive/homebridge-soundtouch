@@ -79,7 +79,7 @@ SoundTouchAccessory.prototype.getServices = function() {
 SoundTouchAccessory.prototype._getOn = function(callback) {
     if (!this.device) {
         this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
-        callback(new Error("SoundTOuch has not been discovered yet."));
+        callback(new Error("SoundTouch has not been discovered yet."));
         return;
     }
 
@@ -94,7 +94,7 @@ SoundTouchAccessory.prototype._getOn = function(callback) {
 SoundTouchAccessory.prototype._setOn = function(on, callback) {
     if (!this.device) {
         this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
-        callback(new Error("SoundTOuch has not been discovered yet."));
+        callback(new Error("SoundTouch has not been discovered yet."));
         return;
     }
 
