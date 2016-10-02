@@ -109,8 +109,8 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
             });
         });
     } else {
-        this.device.stop(function() {
-            accessory.log('Stopping...');
+        this.device.powerOff(function() {
+            accessory.log('Powering Off...');
             callback(null);
         });
     }
