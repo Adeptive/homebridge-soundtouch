@@ -5,6 +5,7 @@ var Service, Characteristic, VolumeCharacteristic, MuteCharacteristic;
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
+
     MuteCharacteristic = Characteristic.Mute;
     VolumeCharacteristic = Characteristic.Volume;
 
@@ -26,12 +27,12 @@ function SoundTouchAccessory(log, config) {
     this.service = new Service.Speaker(this.name);
 
     this.service
-        .addCharacteristic(VolumeCharacteristic)
+        .getCharacteristic(VolumeCharacteristic)
         .on('get', this._getVolume.bind(this))
         .on('set', this._setVolume.bind(this));
 
     this.service
-        .addCharacteristic(MuteCharacteristic)
+        .getCharacteristic(MuteCharacteristic)
         .on('get', this._getMute.bind(this))
         .on('set', this._setMute.bind(this));
 
