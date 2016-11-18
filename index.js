@@ -1,13 +1,13 @@
 var soundtouch = require('soundtouch');
 var inherits = require('util').inherits;
-var Service, Characteristic, VolumeCharacteristic, MuteCharacteristic;
+var Service, Characteristic, VolumeCharacteristic;
 
 module.exports = function(homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
 
-    MuteCharacteristic = Characteristic.Mute;
-    VolumeCharacteristic = Characteristic.Volume;
+    // we can only do this after we receive the homebridge API object
+    makeVolumeCharacteristic();
 
     homebridge.registerAccessory("homebridge-soundtouch", "SoundTouch", SoundTouchAccessory);
 };
@@ -24,17 +24,17 @@ function SoundTouchAccessory(log, config) {
 
     if (!this.room) throw new Error("You must provide a config value for 'room'.");
 
-    this.service = new Service.Speaker(this.name);
+    this.service = new Service.Switch(this.name);
 
     this.service
-        .getCharacteristic(VolumeCharacteristic)
+        .getCharacteristic(Characteristic.On)
+        .on('get', this._getOn.bind(this))
+        .on('set', this._setOn.bind(this));
+
+    this.service
+        .addCharacteristic(VolumeCharacteristic)
         .on('get', this._getVolume.bind(this))
         .on('set', this._setVolume.bind(this));
-
-    this.service
-        .getCharacteristic(MuteCharacteristic)
-        .on('get', this._getMute.bind(this))
-        .on('set', this._setMute.bind(this));
 
     // begin searching for a SoundTouch device with the given name
     this.search();
@@ -76,38 +76,7 @@ SoundTouchAccessory.prototype.getServices = function() {
     return [this.service, this.getInformationService()];
 };
 
-SoundTouchAccessory.prototype._getVolume = function(callback) {
-    if (!this.device) {
-        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
-        callback(new Error("SoundTouch has not been discovered yet."));
-        return;
-    }
-
-    var accessory = this;
-
-    this.device.getVolume(function(json) {
-        var volume = json.volume.actualvolume;
-        accessory.log("Current volume: %s", volume);
-        callback(null, volume * 1);
-    });
-};
-
-SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
-    if (!this.device) {
-        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
-        callback(new Error("SoundTouch has not been discovered yet."));
-        return;
-    }
-
-    var accessory = this;
-
-    this.device.setVolume(volume, function() {
-        accessory.log('Setting volume to %s', volume);
-        callback(null);
-    });
-};
-
-SoundTouchAccessory.prototype._getMute = function(callback) {
+SoundTouchAccessory.prototype._getOn = function(callback) {
     if (!this.device) {
         this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
         callback(new Error("SoundTouch has not been discovered yet."));
@@ -122,7 +91,7 @@ SoundTouchAccessory.prototype._getMute = function(callback) {
     });
 };
 
-SoundTouchAccessory.prototype._setMute = function(volume, callback) {
+SoundTouchAccessory.prototype._setOn = function(on, callback) {
     if (!this.device) {
         this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
         callback(new Error("SoundTouch has not been discovered yet."));
@@ -146,3 +115,55 @@ SoundTouchAccessory.prototype._setMute = function(volume, callback) {
         });
     }
 };
+
+SoundTouchAccessory.prototype._getVolume = function(callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
+        return;
+    }
+
+    var accessory = this;
+
+    this.device.getVolume(function(json) {
+        var volume = json.volume.actualvolume;
+        accessory.log("Current volume: %s", volume);
+        callback(null, volume * 1);
+    });
+};
+
+SoundTouchAccessory.prototype._setVolume = function(volume, callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTOuch has not been discovered yet."));
+        return;
+    }
+
+    var accessory = this;
+
+    this.device.setVolume(volume, function() {
+        accessory.log('Setting volume to %s', volume);
+        callback(null);
+    });
+};
+
+//
+// Custom Characteristic for Volume
+//
+function makeVolumeCharacteristic() {
+
+    VolumeCharacteristic = function() {
+        Characteristic.call(this, 'Volume', '91288267-5678-49B2-8D22-F57BE995AA00');
+        this.setProps({
+            format: Characteristic.Formats.INT,
+            unit: Characteristic.Units.PERCENTAGE,
+            maxValue: 100,
+            minValue: 0,
+            minStep: 1,
+            perms: [Characteristic.Perms.READ, Characteristic.Perms.WRITE, Characteristic.Perms.NOTIFY]
+        });
+        this.value = this.getDefaultValue();
+    };
+
+    inherits(VolumeCharacteristic, Characteristic);
+}
