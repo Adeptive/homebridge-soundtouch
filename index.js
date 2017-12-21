@@ -47,7 +47,7 @@ SoundTouchAccessory.prototype.search = function() {
     accessory.soundtouch.search(function(device) {
 
         if (accessory.room != device.name) {
-            accessory.log("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
+            //accessory.log("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
             return;
         }
 
