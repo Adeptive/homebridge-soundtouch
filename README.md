@@ -22,6 +22,23 @@ Example config.json:
 	],
 ```
 
+Example config.json for multiple speakers:
+
+```
+    "accessories": [
+		{
+			"accessory": "SoundTouch",
+			"name": "Speaker Bathroom",
+			"room": "Bathroom"
+		},
+		{
+            "accessory": "SoundTouch",
+            "name": "Speaker Kitchen",
+            "room": "Kitchen"
+        }
+	],
+```
+
 Example config.json to configure the device as type speaker:
 
 ```
@@ -45,7 +62,7 @@ Fields:
 Don't use soundtouch or music as name, because Siri will try to open the SoundTouch or Apple Music app.
 
 Controlling the volume with Siri is not possible, because volume is not (yet) supported as a Characteristic.
-In fact, for HomeKit this accessory is treated like a switch (because music accessories are not supported).
+In fact, for HomeKit this accessory is treated like a switch (because speaker accessories are not supported). Unless you use another HomeKit app and configure the type parameter.
 
 ##Connecting
 
