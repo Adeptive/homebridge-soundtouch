@@ -21,18 +21,28 @@ function SoundTouchAccessory(log, config) {
     this.config = config;
     this.name = config["name"];
     this.room = config["room"];
+    this.isSpeaker = config["type"] === 'speaker';
 
     if (!this.room) throw new Error("You must provide a config value for 'room'.");
 
-    this.service = new Service.Switch(this.name);
+    if (this.isSpeaker) {
+        this.service = new Service.Speaker(this.name);
+    } else {
+        this.service = new Service.Switch(this.name);
+    }
 
     this.service
         .getCharacteristic(Characteristic.On)
         .on('get', this._getOn.bind(this))
         .on('set', this._setOn.bind(this));
 
+    var volumeCharacteristic = VolumeCharacteristic;
+    if (this.isSpeaker) {
+        volumeCharacteristic = Characteristic.Volume;
+    }
+
     this.service
-        .addCharacteristic(VolumeCharacteristic)
+        .addCharacteristic(volumeCharacteristic)
         .on('get', this._getVolume.bind(this))
         .on('set', this._setVolume.bind(this));
 
