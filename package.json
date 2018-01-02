@@ -1,6 +1,6 @@
 {
   "name": "homebridge-soundtouch",
-  "version": "5.0.5",
+  "version": "5.0.8",
   "description": "Homebridge SoundTouch",
   "author": "CONNCTED",
   "dependencies": {

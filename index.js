@@ -174,13 +174,20 @@ SoundTouchAccessory.prototype._getPreset = function(callback) {
 
     var accessory = this;
 
-    callback(null, 1);
+    accessory.device.getPresets(function(json) {
+        accessory.device.getNowPlaying(function(jsonNowPlaying) {
+            for (var presetIndex in json.presets.preset) {
+                var preset = json.presets.preset[presetIndex];
+                if (JSON.stringify(preset.ContentItem) === JSON.stringify(jsonNowPlaying.nowPlaying.ContentItem)) {
 
-    /*this.device.getVolume(function(json) {
-        var volume = json.volume.actualvolume;
-        accessory.log("Current preset: %s", preset);
-        callback(null, volume * 1);
-    });*/
+                    accessory.log("Current preset: %s", preset.id);
+                    callback(null, preset.id * 1);
+                    return;
+                }
+            }
+            callback(null, 1);
+        });
+    });
 };
 
 SoundTouchAccessory.prototype._setPreset = function(preset, callback) {
@@ -228,7 +235,7 @@ function makePresetCharacteristic() {
         Characteristic.call(this, 'Preset', '91288999-5678-49B2-8D22-F57BE995AA00');
         this.setProps({
             format: Characteristic.Formats.INT,
-            unit: Characteristic.Units.PERCENTAGE,
+            //unit: Characteristic.Units.PERCENTAGE,
             maxValue: 6,
             minValue: 1,
             minStep: 1,
