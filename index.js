@@ -28,26 +28,30 @@ function SoundTouchAccessory(log, config) {
 
     if (this.isSpeaker) {
         this.service = new Service.Speaker(this.name);
+
+        this.service
+            .getCharacteristic(Characteristic.Mute)
+            .on('get', this._getOn.bind(this))
+            .on('set', this._setOn.bind(this));
+
+        this.service
+            .addCharacteristic(Characteristic.Volume)
+            .on('get', this._getVolume.bind(this))
+            .on('set', this._setVolume.bind(this));
+
     } else {
         this.service = new Service.Switch(this.name);
-    }
 
-    this.service
-        .getCharacteristic(Characteristic.On)
-        .on('get', this._getOn.bind(this))
-        .on('set', this._setOn.bind(this));
+        this.service
+            .getCharacteristic(Characteristic.On)
+            .on('get', this._getOn.bind(this))
+            .on('set', this._setOn.bind(this));
 
-    var volumeCharacteristic = VolumeCharacteristic;
-    if (this.isSpeaker) {
-        volumeCharacteristic = Characteristic.Volume;
-    }
+        this.service
+            .addCharacteristic(VolumeCharacteristic)
+            .on('get', this._getVolume.bind(this))
+            .on('set', this._setVolume.bind(this));
 
-    this.service
-        .addCharacteristic(volumeCharacteristic)
-        .on('get', this._getVolume.bind(this))
-        .on('set', this._setVolume.bind(this));
-
-    if (!this.isSpeaker) {
         this.service
             .addCharacteristic(PresetCharacteristic)
             .on('get', this._getPreset.bind(this))
@@ -132,6 +136,36 @@ SoundTouchAccessory.prototype._setOn = function(on, callback) {
             callback(null);
         });
     }
+};
+
+SoundTouchAccessory.prototype._getMute = function(callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTouch has not been discovered yet."));
+        return;
+    }
+
+    var accessory = this;
+
+    this.device.getVolume(function(json) {
+        accessory.log('Check if is muted: %s', json.volume.muteenabled === 'true');
+        callback(null, json.volume.muteenabled === 'true');
+    });
+};
+
+SoundTouchAccessory.prototype._setMute = function(on, callback) {
+    if (!this.device) {
+        this.log.warn("Ignoring request; SoundTouch device has not yet been discovered.");
+        callback(new Error("SoundTouch has not been discovered yet."));
+        return;
+    }
+
+    var accessory = this;
+
+    this.device.pressKey("MUTE", function() {
+        accessory.log(on ? 'Muting ...' : 'Unmuting ...');
+        callback(null);
+    });
 };
 
 SoundTouchAccessory.prototype._getVolume = function(callback) {
