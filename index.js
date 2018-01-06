@@ -51,12 +51,12 @@ function SoundTouchAccessory(log, config) {
             .addCharacteristic(VolumeCharacteristic)
             .on('get', this._getVolume.bind(this))
             .on('set', this._setVolume.bind(this));
-
-        this.service
-            .addCharacteristic(PresetCharacteristic)
-            .on('get', this._getPreset.bind(this))
-            .on('set', this._setPreset.bind(this));
     }
+
+    this.service
+        .addCharacteristic(PresetCharacteristic)
+        .on('get', this._getPreset.bind(this))
+        .on('set', this._setPreset.bind(this));
 
     // begin searching for a SoundTouch device with the given name
     this.search();
