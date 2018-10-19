@@ -52,12 +52,26 @@ Example config.json to configure the device as type speaker:
 	],
 ```
 
+Example config.json to use a fix IP Address for the device:
+
+```
+    "accessories": [
+		{
+			"accessory": "SoundTouch",
+			"name": "Speaker Bathroom",
+			"room": "Bathroom"
+			"ip": "192.168.1.68"
+		}
+	],
+```
+
 Fields: 
 
 * "accessory": Must always be "SoundTouch" (required)
 * "name": The name you want to use to control the SoundTouch.
 * "room": Should match exactly with the name of the SoundTouch device.
 * "type": Must be 'Switch' or 'Speaker' (Switch is default). This determine the type of device for HomeKit. (Switch is supported by the official Apple HomeKit app, if you use another third party app, speaker could be used)
+* "ip": The IP address of the SoundTouch device. Can be used in case of discovery issues.
 
 Don't use soundtouch or music as name, because Siri will try to open the SoundTouch or Apple Music app.
 

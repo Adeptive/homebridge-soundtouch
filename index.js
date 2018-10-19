@@ -1,4 +1,5 @@
 var soundtouch = require('soundtouch');
+var SoundTouchAPI = require('soundtouch/api');
 var inherits = require('util').inherits;
 var Service, Characteristic, VolumeCharacteristic, PresetCharacteristic;
 
@@ -23,6 +24,8 @@ function SoundTouchAccessory(log, config) {
     this.name = config["name"];
     this.room = config["room"];
     this.isSpeaker = config["type"] === 'speaker';
+    this.ip = (config["ip"]) ? config["ip"] : null;
+    this.port = 8090;
 
     if (!this.room) throw new Error("You must provide a config value for 'room'.");
 
@@ -66,22 +69,31 @@ SoundTouchAccessory.prototype.search = function() {
     var accessory = this;
     accessory.soundtouch = soundtouch;
 
-    accessory.soundtouch.search(function(device) {
+    if (!this.ip) {
+        accessory.soundtouch.search(function (device) {
+            if (accessory.room != device.name) {
+                //accessory.log("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
+                return;
+            }
 
-        if (accessory.room != device.name) {
-            //accessory.log("Ignoring device because the room name '%s' does not match the desired name '%s'.", device.name, accessory.room);
-            return;
-        }
+            accessory.log("Found Bose SoundTouch device: %s", device.name);
 
-        accessory.log("Found Bose SoundTouch device: %s", device.name);
+            accessory.device = device;
 
+            //we found the device, so stop looking
+            soundtouch.stopSearching();
+        }, function (device) {
+            accessory.log("Bose SoundTouch device goes offline: %s", device.name);
+        });
+    } else {
+        var device = new SoundTouchAPI({
+            ip: this.ip,
+            port: this.port,
+            name: this.room
+        });
+        accessory.soundtouch.addDevice(device);
         accessory.device = device;
-
-        //we found the device, so stop looking
-        soundtouch.stopSearching();
-    }, function(device) {
-        accessory.log("Bose SoundTouch device goes offline: %s", device.name);
-    });
+    }
 };
 
 SoundTouchAccessory.prototype.getInformationService = function() {
