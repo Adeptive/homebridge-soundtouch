@@ -40,7 +40,7 @@ function SoundTouchAccessory(log, config) {
             .on('set', this._setVolume.bind(this));
 
     } else {
-        this.service = new Service.Switch(this.name);
+        this.service = new Service.Lightbulb(this.name);
 
         this.service
             .getCharacteristic(Characteristic.On)
@@ -48,7 +48,7 @@ function SoundTouchAccessory(log, config) {
             .on('set', this._setOn.bind(this));
 
         this.service
-            .addCharacteristic(VolumeCharacteristic)
+            .addCharacteristic(new Characteristic.Brightness())
             .on('get', this._getVolume.bind(this))
             .on('set', this._setVolume.bind(this));
     }
